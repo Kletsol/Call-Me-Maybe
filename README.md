@@ -28,7 +28,7 @@ Each of these files fulfills a specific role :
 
 ### Output
 
-The program output is a single JSON file with all the JSON objects resulting from the processed prompts, each object containing the following keys (the type is specified for clarity only, it must not be included in the output):
+The program outputs a single JSON file with all the JSON objects resulting from the processed prompts, each object containing the following keys (the type is specified for clarity only, it must not be included in the output):
 
 |Key|Value|Type|
 |---|---|---|
