@@ -12,4 +12,5 @@ def parse_arguments() -> NameSpace:
     parser.add_argument("--output",
                         help="output file path",
                         default="data/output/function_calling_results.json")
-    return parser.parse_args()
+    parsed = parser.parse_args()
+    return parsed
