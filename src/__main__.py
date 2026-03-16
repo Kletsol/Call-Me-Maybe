@@ -1,5 +1,3 @@
-from torch import softmax
-
 from src import Model
 from src.objects.Processor import Processor
 from src.parsing.args import parse_arguments

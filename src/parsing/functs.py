@@ -1,5 +1,5 @@
 import json
-from pydantic import BaseModel, model_validator, Field
+from pydantic import BaseModel, model_validator
 
 
 class FunctionError(Exception):
