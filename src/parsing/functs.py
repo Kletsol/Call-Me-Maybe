@@ -1,5 +1,5 @@
 import json
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, Field
 
 
 class FunctionError(Exception):
@@ -7,10 +7,10 @@ class FunctionError(Exception):
 
 
 class ValidFunction(BaseModel):
-    NAME = str
-    DESCRIPTION = str
-    PARAMETERS = dict[str, dict[str, str]]
-    RETURNS = dict[str, str]
+    NAME: str
+    DESCRIPTION: str
+    PARAMETERS: dict[str, dict[str, str]]
+    RETURNS: dict[str, str]
 
     @model_validator(mode="after")
     def validate(self):
@@ -34,10 +34,10 @@ def get_function_def(path: str) -> list:
         for function in data:
             function_defs.append(
                 ValidFunction(
-                    name=function["name"],
-                    description=function["description"],
-                    parameters=function["parameters"],
-                    returns=function["returns"],
+                    NAME=function["name"],
+                    DESCRIPTION=function["description"],
+                    PARAMETERS=function["parameters"],
+                    RETURNS=function["returns"],
                 )
             )
         return function_defs

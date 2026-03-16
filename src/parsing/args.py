@@ -1,7 +1,7 @@
-from argparse import ArgumentParser, NameSpace
+from argparse import ArgumentParser, Namespace
 
 
-def parse_arguments() -> NameSpace:
+def parse_arguments() -> Namespace:
     parser = ArgumentParser()
     parser.add_argument("--functions_definition",
                         help="functions_definition file path",

@@ -18,7 +18,7 @@ def get_prompts(path: str) -> list:
             raise PromptError("[ERROR]: No data in function calling tests")
         prompts = []
         for line in data:
-            prompts.append(ValidPrompt(prompt=line["prompt"]))
+            prompts.append(ValidPrompt(PROMPT=line["prompt"]))
         return prompts
     except FileNotFoundError:
         raise FileNotFoundError(f"[ERROR]: prompts file not found in {path}")
