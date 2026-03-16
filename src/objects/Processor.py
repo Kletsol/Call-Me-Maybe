@@ -9,8 +9,12 @@ class Processor():
 
     def process_prompt(self):
         ids_list = []
+        logits_list = []
         for prompt in self.__prompts:
             id = self.__llm.encode(prompt)
             ids_list.append(id)
-        logits = self.__llm.get_logits_from_input_ids(ids_list)
-        return logits
+        print(ids_list)
+        for id in ids_list:
+            logit = self.__llm.get_logits_from_input_ids(ids_list)
+            logits_list.append(logit)
+        return logits_list

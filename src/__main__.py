@@ -1,3 +1,5 @@
+from torch import softmax
+
 from src import Model
 from src.objects.Processor import Processor
 from src.parsing.args import parse_arguments
@@ -10,15 +12,18 @@ def main() -> None:
         args = parse_arguments()
         functions = get_function_def(args.functions_definition)
         prompts = get_prompts(args.input)
-        for function in functions:
-            print(function)
+        temp_prompts = []
+        temp_functions = []
         for prompt in prompts:
-            print(prompt)
-        # llm = Model(model_name=args.model, device=args.device)
-        # processor = Processor(prompts, functions, llm)
-        # processor.process_prompt()
+            temp_prompts.append(prompt.PROMPT)
+        for function in functions:
+            temp_functions.append(function.NAME)
+        llm = Model(model_name=args.model, device=args.device)
+        processor = Processor(temp_prompts, temp_functions, llm)
+        print(processor.process_prompt())
     except Exception as e:
         print(e)
 
 
 main()
+# softmax()
