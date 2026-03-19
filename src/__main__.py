@@ -1,8 +1,5 @@
-from src import Model
-from src.objects.Processor import Processor
-from src.parsing.args import parse_arguments
-from src.parsing.functs import get_function_def
-from src.parsing.prompts import get_prompts
+from src import Model, Processor, parse_arguments, get_function_def, \
+    get_prompts
 
 
 def main() -> None:
@@ -10,18 +7,22 @@ def main() -> None:
         args = parse_arguments()
         functions = get_function_def(args.functions_definition)
         prompts = get_prompts(args.input)
-        temp_prompts = []
-        temp_functions = []
-        for prompt in prompts:
-            temp_prompts.append(prompt.PROMPT)
-        for function in functions:
-            temp_functions.append(function.NAME)
+
+        # temp_prompts = []
+        # temp_functions = []
+        # for prompt in prompts:
+        #     temp_prompts.append(prompt.PROMPT)
+        # for function in functions:
+        #     temp_functions.append(function.NAME)
+        # print(temp_prompts)
+        # print(temp_functions)
         llm = Model(model_name=args.model, device=args.device)
-        processor = Processor(temp_prompts, temp_functions, llm)
-        print(processor.process_prompt())
+        processor = Processor(prompts, functions, llm)
+        output = processor.process_prompt()
+        for string in output:
+            print(string)
     except Exception as e:
         print(e)
 
 
 main()
-# softmax()

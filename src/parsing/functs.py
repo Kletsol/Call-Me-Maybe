@@ -45,6 +45,6 @@ def get_function_def(path: str) -> list:
         raise FileNotFoundError("[ERROR]: functions definition"
                                 f"file not found in {path}")
     except PermissionError:
-        raise PermissionError("[ERROR]: can't open file - permission denied")
+        raise FunctionError("[ERROR]: can't open file - permission denied")
     except json.JSONDecodeError:
         raise FunctionError("[ERROR]: can't load file - invalid json")
