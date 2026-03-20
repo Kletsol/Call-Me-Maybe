@@ -11,8 +11,8 @@ class Model(Small_LLM_Model):
     #     token = probas.index(sorted_tokens[skip])
     #     return self.decode(token)
 
-    def find_multiple_tokens(self, prompt_message: str,
-                             previous_tokens: str = '', skip: bool = False):
+    def generate_multiple_tokens(self, prompt_message: str,
+                                 previous_tokens: str = '', skip: int = 0):
         prompt = f"{prompt_message}, {previous_tokens}"
         tensors = self.encode(prompt)
         probas = self.get_logits_from_input_ids(tensors.tolist()[0])

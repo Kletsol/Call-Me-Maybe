@@ -8,6 +8,13 @@ class Processor():
         self.__functions = functions
         self.__llm = llm
 
+    def get_functions(self):
+        result = []
+        for function in self.__functions:
+            result.append({'name': function.NAME,
+                           'description': function.DESCRIPTION})
+        return result
+
     def process_prompt(self):
         # ids_list = []
         # logits_list = []
@@ -32,39 +39,52 @@ class Processor():
         return output
 
     def generate_function(self, prompt: ValidPrompt):
-        pass
+        available_functions = self.get_functions()
+        functions_str = ''
+        while True:
+            output = f"{available_functions}, {prompt.PROMPT}"
+            for token in self.__llm.generate_multiple_tokens(
+                    prompt_message=output, previous_tokens=functions_str):
+                result = []
+                for function in available_functions:
+                    if function['name'].startswith(functions_str + token):
+                        result.append(function)
+                    if (len(result) == 1):
+                        return result[0]['name']
+                    elif len(result) > 1 and token != '':
+                        functions_str = functions_str + token
+                        available_functions = result
+                        break
 
     def generate_parameters(self, prompt: ValidPrompt, function: ValidFunction):
         pass
 
+    # def generate_fn_name(self, prompt: ValidPrompt) -> Any:
+    #     """ Given a prompt, returns the most useful
+    #         function of the PromptProcessor's functions
+    #         to solve the prompt """
+    #     available_functions = self.get_available_functions()
 
-def generate_fn_name(self, prompt: ValidPrompt) -> Any:
-    """ Given a prompt, returns the most useful
-        function of the PromptProcessor's functions
-        to solve the prompt """
-    available_functions = self.get_available_functions()
+    #     function_progress = ''
+    #     while True:
+    #         # Prompt creation
+    #         prompt_message = 'Here are the different functions available: ' + \
+    #             f'{available_functions}. ' + \
+    #             f'To resolve the prompt, "{prompt.PROMPT}".'
 
-    function_progress = ''
-    while True:
-        # Prompt creation
-        prompt_message = 'Here are the different functions available: ' + \
-            f'{available_functions}. ' + \
-            f'To resolve the prompt, "{prompt.prompt}".'
-
-        # Token generator
-        for generation in self.__llm.predict_multiple_tokens(
-            prompt_message=prompt_message,
-                previous_tokens=function_progress):
-
-            # Processing current token
-            remaining_functions = []
-            for function in available_functions:
-                if function['name'].startswith(function_progress
-                                               + generation):
-                    remaining_functions.append(function)
-            if (len(remaining_functions) == 1):
-                return remaining_functions[0]['name']
-            elif len(remaining_functions) > 1 and generation != '':
-                function_progress = function_progress + generation
-                available_functions = remaining_functions
-                break
+    #         # Token generator
+    #         for generation in self.__llm.generate_multiple_tokens(
+    #             prompt_message=prompt_message,
+    #                 previous_tokens=function_progress):
+    #             # Processing current token
+    #             remaining_functions = []
+    #             for function in available_functions:
+    #                 if function['name'].startswith(function_progress
+    #                                             + generation):
+    #                     remaining_functions.append(function)
+    #             if (len(remaining_functions) == 1):
+    #                 return remaining_functions[0]['name']
+    #             elif len(remaining_functions) > 1 and generation != '':
+    #                 function_progress = function_progress + generation
+    #                 available_functions = remaining_functions
+    #                 break

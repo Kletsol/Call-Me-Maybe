@@ -19,8 +19,9 @@ def main() -> None:
         llm = Model(model_name=args.model, device=args.device)
         processor = Processor(prompts, functions, llm)
         output = processor.process_prompt()
-        for string in output:
-            print(string)
+        print(output)
+        # for string in output:
+            # print(string)
     except Exception as e:
         print(e)
 
