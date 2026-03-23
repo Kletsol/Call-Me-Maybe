@@ -16,8 +16,6 @@ class Processor():
         return result
 
     def process_prompt(self):
-        # ids_list = []
-        # logits_list = []
         output = []
         for prompt in self.__prompts:
             prompt_output: dict[Any, Any] = {}
@@ -30,12 +28,6 @@ class Processor():
             prompt_output['params'] = parameters
 
             output.append(prompt_output)
-        #     id = self.__llm.encode(prompt)
-        #     ids_list.append(id)
-        # print(ids_list)
-        # for id in ids_list:
-        #     logit = self.__llm.get_logits_from_input_ids(ids_list)
-        #     logits_list.append(logit)  # tolist()
         return output
 
     def function_generator(self, prompt: ValidPrompt):
@@ -43,7 +35,7 @@ class Processor():
         functions_str = ''
         while True:
             output = f"{available_functions}, {prompt.PROMPT}"
-            for token in self.__llm.generate_multiple_tokens(
+            for token in self.__llm.generate_tokens(
                     prompt_message=output, previous_tokens=functions_str):
                 result = []
                 for function in available_functions:
