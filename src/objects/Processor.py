@@ -23,7 +23,7 @@ class Processor():
             prompt_output: dict[Any, Any] = {}
             prompt_output['prompt'] = prompt.PROMPT
 
-            function_name = self.generate_function(prompt)
+            function_name = self.function_generator(prompt)
             prompt_output['name'] = function_name
 
             parameters = self.generate_parameters(prompt, function_name)
@@ -38,7 +38,7 @@ class Processor():
         #     logits_list.append(logit)  # tolist()
         return output
 
-    def generate_function(self, prompt: ValidPrompt):
+    def function_generator(self, prompt: ValidPrompt):
         available_functions = self.get_functions()
         functions_str = ''
         while True:
@@ -49,42 +49,13 @@ class Processor():
                 for function in available_functions:
                     if function['name'].startswith(functions_str + token):
                         result.append(function)
-                    if (len(result) == 1):
-                        return result[0]['name']
-                    elif len(result) > 1 and token != '':
-                        functions_str = functions_str + token
-                        available_functions = result
-                        break
+                if (len(result) == 1):
+                    print("\033[0;33mFound something !\033[0;0m")
+                    return result[0]['name']
+                elif len(result) > 1 and token != '':
+                    functions_str = functions_str + token
+                    available_functions = result
+                    break
 
     def generate_parameters(self, prompt: ValidPrompt, function: ValidFunction):
         pass
-
-    # def generate_fn_name(self, prompt: ValidPrompt) -> Any:
-    #     """ Given a prompt, returns the most useful
-    #         function of the PromptProcessor's functions
-    #         to solve the prompt """
-    #     available_functions = self.get_available_functions()
-
-    #     function_progress = ''
-    #     while True:
-    #         # Prompt creation
-    #         prompt_message = 'Here are the different functions available: ' + \
-    #             f'{available_functions}. ' + \
-    #             f'To resolve the prompt, "{prompt.PROMPT}".'
-
-    #         # Token generator
-    #         for generation in self.__llm.generate_multiple_tokens(
-    #             prompt_message=prompt_message,
-    #                 previous_tokens=function_progress):
-    #             # Processing current token
-    #             remaining_functions = []
-    #             for function in available_functions:
-    #                 if function['name'].startswith(function_progress
-    #                                             + generation):
-    #                     remaining_functions.append(function)
-    #             if (len(remaining_functions) == 1):
-    #                 return remaining_functions[0]['name']
-    #             elif len(remaining_functions) > 1 and generation != '':
-    #                 function_progress = function_progress + generation
-    #                 available_functions = remaining_functions
-    #                 break

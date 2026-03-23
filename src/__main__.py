@@ -1,5 +1,4 @@
-from src import Model, Processor, parse_arguments, get_function_def, \
-    get_prompts
+from src import Model, Processor, parse_arguments, get_function_def, get_prompts
 
 
 def main() -> None:
@@ -19,9 +18,10 @@ def main() -> None:
         llm = Model(model_name=args.model, device=args.device)
         processor = Processor(prompts, functions, llm)
         output = processor.process_prompt()
-        print(output)
-        # for string in output:
-            # print(string)
+        for line in output:
+            print(line)
+    except KeyboardInterrupt:
+        print("\r\033[0;31mAborted - see you soon :D\033[0;0m")
     except Exception as e:
         print(e)
 
