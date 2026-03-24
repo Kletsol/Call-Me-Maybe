@@ -75,9 +75,11 @@ class Processor():
                     '=' + str(output[arg]) + '\n'
             previous_gen = previous_gen + param + '='
             if definition.PARAMETERS[param]['type'] == 'number':
-                output[param] = self.nbr_param_generator(prompt, definition, previous_gen)
+                output[param] = self.nbr_param_generator(prompt, definition,
+                                                         previous_gen)
             elif definition.PARAMETERS[param]['type'] == 'string':
-                output[param] = self.str_param_generator(prompt, definition, previous_gen)
+                output[param] = self.str_param_generator(prompt, definition,
+                                                         previous_gen)
         return output
 
     def nbr_param_generator(self, prompt_message: ValidPrompt, function: ValidFunction, previous_gen: str) -> int:
@@ -85,14 +87,13 @@ class Processor():
         numbers = "-0123456789"
         prompt = f"{prompt_message}, {function}"
         while True:
-            for token in self.__llm.generate_tokens(prompt_message=prompt, previous_tokens=previous_gen):
+            for token in self.__llm.generate_tokens(
+                prompt_message=prompt, previous_tokens=previous_gen+output):
                 for character in token:
                     if character not in numbers:
                         continue
-                    else:
-                        output = output + token
-                if output:
-                    return output
+                output = output + token
+                break
 
 
     def str_param_generator(self, prompt: ValidPrompt, function: ValidFunction, previous_gen: str):
