@@ -6,15 +6,6 @@ def main() -> None:
         args = parse_arguments()
         functions = get_function_def(args.functions_definition)
         prompts = get_prompts(args.input)
-
-        # temp_prompts = []
-        # temp_functions = []
-        # for prompt in prompts:
-        #     temp_prompts.append(prompt.PROMPT)
-        # for function in functions:
-        #     temp_functions.append(function.NAME)
-        # print(temp_prompts)
-        # print(temp_functions)
         llm = Model(model_name=args.model, device=args.device)
         processor = Processor(prompts, functions, llm)
         output = processor.process_prompt()

@@ -1,4 +1,4 @@
-INPUT = data/input/function_calling_tests.json
+INPUT = data/input/test.json
 OUTPUT = data/output/function_calling_results.json
 
 install:
