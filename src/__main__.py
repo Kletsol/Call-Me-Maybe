@@ -7,6 +7,10 @@ def main() -> None:
         functions = get_function_def(args.functions_definition)
         prompts = get_prompts(args.input)
         llm = Model(model_name=args.model, device=args.device)
+        # path = llm.get_path_to_vocab_file()
+        # with open(path, "r") as file:
+        #     for line in file:
+        #         print(line)
         processor = Processor(prompts, functions, llm)
         output = processor.process_prompt()
         for line in output:

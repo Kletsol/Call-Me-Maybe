@@ -11,6 +11,7 @@ class ValidFunction(BaseModel):
     DESCRIPTION: str
     PARAMETERS: dict[str, dict[str, str]]
     RETURNS: dict[str, str]
+    FULL_DEF: str
 
     @model_validator(mode="after")
     def validate(self):
@@ -38,6 +39,7 @@ def get_function_def(path: str) -> list:
                     DESCRIPTION=function["description"],
                     PARAMETERS=function["parameters"],
                     RETURNS=function["returns"],
+                    FULL_DEF=str(function)
                 )
             )
         return function_defs
