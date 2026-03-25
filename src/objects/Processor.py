@@ -11,15 +11,6 @@ class Processor():
         self.__functions = functions
         self.__llm = llm
 
-    # @staticmethod
-    # def animation():
-    #     string = ["🤔 ", ".", ".", ".", ".", ".", ".",
-    # "\033[0;33mFound something !\033[0;0m💡"]
-    #     for step in string:
-    #         print(step, end="")
-    #         sleep(1)
-    #     print()
-
     def get_functions(self):
         result = []
         for function in self.__functions:
@@ -33,7 +24,7 @@ class Processor():
             prompt_output: dict[Any, Any] = {}
             prompt_output['prompt'] = prompt.PROMPT
 
-            function_name = self.function_generator(prompt)
+            function_name = self.function_name_generator(prompt)
             prompt_output['name'] = function_name
 
             parameters = self.params_generator(prompt, function_name)
@@ -42,23 +33,22 @@ class Processor():
             output.append(prompt_output)
         return output
 
-    def function_generator(self, prompt: ValidPrompt):
+    def function_name_generator(self, prompt: ValidPrompt):
         available_functions = self.get_functions()
-        functions_str = ''
+        processus = ''
         while True:
-            output = f"{available_functions}, {prompt.PROMPT}"
+            output = f"Here are the functions you can access to resolve the prompt: {available_functions}. And here is the prompt: {prompt.PROMPT}"
             for token in self.__llm.generate_tokens(
-                    prompt_message=output, previous_tokens=functions_str):
+                    prompt_message=output, previous_tokens=processus):
                 result = []
                 for function in available_functions:
-                    if function['name'].startswith(functions_str + token):
+                    if function['name'].startswith(processus + token):
                         result.append(function)
                 if (len(result) == 1):
                     print("🤔 ...... \033[0;33mFound something !\033[0;0m💡")
-                    # self.animation()
                     return result[0]['name']
                 elif len(result) > 1 and token != '':
-                    functions_str = functions_str + token
+                    processus += token
                     available_functions = result
                     break
 
@@ -82,7 +72,7 @@ class Processor():
 
     def nbr_param_generator(self, prompt_message: ValidPrompt, function: ValidFunction, previous_gen: str) -> int:
         output = ''
-        prompt = f"{prompt_message}, {str(function)}"
+        prompt = f"Here is the prompt you have to get params from: {prompt_message}. And here is the function applied on the prompt: {str(function)}"
         while True:
             for token in self.__llm.generate_tokens(prompt_message=prompt, previous_tokens=previous_gen+output):
                 if token == '':
@@ -90,22 +80,11 @@ class Processor():
                         return output
                     except ValueError:
                         output = ''
-                numbers = "-0123456789.\n"
                 stop = False
                 for character in token:
-                    if character not in numbers:
+                    if character not in "-0123456789.\n":
                         stop = True
                 if stop is True:
-                    continue
-
-                if (output + token).count('.') >= 2:
-                    continue
-
-                if (output + token).count('-') >= 2:
-                    continue
-
-                if (output + token).count('-') == 1 and \
-                        (output + token)[0] != '-':
                     continue
 
                 output = output + token
@@ -124,50 +103,12 @@ class Processor():
         output = ''
         # print(function)
         # prompt = f"{prompt_message}, {function.FULL_DEF}"
-        prompt = f"To solve the prompt {prompt_message}, you" + \
-            " will use the following function:" + \
-            f" {function.FULL_DEF}. Provide each " + \
-            "parameter. Keep it concise and don't add custom fields."
+        prompt = f"Here is the prompt you have to get params from: {prompt_message}. And here is the function applied on the prompt: {function.FULL_DEF}. Keep it simple and concise."
         while "\n" not in output:
             token = self.__llm.generate_single_token(prompt_message=prompt, previous_tokens=previous_gen+output)
             if token == '':
                 return output
             output = output + token
             if '\n' in output:
-                return output.split('\n')[0]
+                return output.split('\n')[0].rstrip(' ')
         return output
-                    
-
-    # def generate_str_parameter(self, prompt_message: Prompt,
-    #                            function: FunctionDefinition,
-    #                            previous_gen: str) -> Any:
-    #     """Generate a string parameter, from a given function
-    #     and its parameters.
-
-    #     Args:
-    #         prompt_message (Prompt): original prompt
-    #         function (FunctionDefinition): function definiton
-    #         previous_gen (str): previous arguments generated
-
-    #     Returns:
-    #         str: string generated
-    #     """
-    #     prompt = f"To solve the prompt {prompt_message}, you" + \
-    #         " will use the following function:" + \
-    #         f" {function.full_definition}. Provide each " + \
-    #         "parameter. Keep it concise and don't add custom fields."
-
-    #     argument_progress = ''
-    #     while '\n' not in argument_progress:
-    #         generation = self.__llm.predict_token(
-    #             prompt_message=prompt,
-    #             previous_tokens=previous_gen + argument_progress
-    #         )
-    #         if generation == '':
-    #             return argument_progress
-
-    #         argument_progress = argument_progress + generation
-
-    #         if '\n' in argument_progress:
-    #             return argument_progress.split('\n')[0]
-    #     return argument_progress
