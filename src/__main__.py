@@ -1,4 +1,5 @@
-from src import Model, Processor, parse_arguments, get_function_def, get_prompts
+from src import Model, Processor, parse_arguments, \
+    get_function_def, get_prompts
 
 
 def main() -> None:

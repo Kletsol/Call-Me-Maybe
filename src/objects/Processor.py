@@ -37,9 +37,11 @@ class Processor():
         available_functions = self.get_functions()
         processus = ''
         while True:
-            output = f"Here are the functions you can access to resolve the prompt: {available_functions}. And here is the prompt: {prompt.PROMPT}"
+            output = "Here are the functions you can access to resolve the "\
+                f"prompt:{available_functions}. "\
+                f"And here is the prompt: {prompt.PROMPT}"
             for token in self.__llm.generate_tokens(
-                    prompt_message=output, previous_tokens=processus):
+                    prompt_message=output, prev_tokens=processus):
                 result = []
                 for function in available_functions:
                     if function['name'].startswith(processus + token):
@@ -53,7 +55,7 @@ class Processor():
                     break
 
     def retrieve_params(self, prompt: ValidPrompt,
-                         function: str) -> dict[Any, Any]:
+                        function: str) -> dict[Any, Any]:
         for funct_def in self.__functions:
             if funct_def.NAME == function:
                 definition = funct_def
@@ -65,17 +67,22 @@ class Processor():
                     '=' + str(output[arg]) + '\n'
             previous_gen = previous_gen + param + '='
             if definition.PARAMETERS[param]['type'] == 'number':
-                output[param] = self.get_nbr_param(prompt, definition, previous_gen)
+                output[param] = self.get_nbr_param(prompt, definition,
+                                                   previous_gen)
             elif definition.PARAMETERS[param]['type'] == 'string':
-                output[param] = self.get_str_param(prompt, definition, previous_gen)
+                output[param] = self.get_str_param(prompt, definition,
+                                                   previous_gen)
         return output
 
     def get_nbr_param(self, prompt_message: ValidPrompt,
-                      function: ValidFunction, previous_gen: str) -> int:
+                      function: ValidFunction, prev_gen: str) -> int:
         output = ''
-        prompt = f"Here is the prompt you have to get params from: {prompt_message}. And here is the function applied on the prompt: {str(function)}"
+        prompt = "Here is the prompt you have to get params from: "\
+            f"{prompt_message}. "\
+            f"And here is the function applied on the prompt: {str(function)}"
         while True:
-            for token in self.__llm.generate_tokens(prompt_message=prompt, previous_tokens=previous_gen+output):
+            for token in self.__llm.generate_tokens(
+                    prompt_message=prompt, prev_tokens=prev_gen+output):
                 if token == '':
                     try:
                         return output
@@ -98,14 +105,18 @@ class Processor():
                         output = ''
                 break
 
-
-    def get_str_param(self, prompt_message: ValidPrompt, function: ValidFunction, previous_gen: str):
+    def get_str_param(self, prompt_message: ValidPrompt,
+                      function: ValidFunction, prev_gen: str):
         output = ''
         # print(function)
         # prompt = f"{prompt_message}, {function.FULL_DEF}"
-        prompt = f"Here is the prompt you have to get params from: {prompt_message}. And here is the function applied on the prompt: {function.FULL_DEF}. Keep it simple and concise."
+        prompt = "Here is the prompt you have to get params from: "\
+            f"{prompt_message}. "\
+            "And here is the function applied on the prompt: "\
+            f"{function.FULL_DEF}. Keep it simple and concise."
         while "\n" not in output:
-            token = self.__llm.generate_single_token(prompt_message=prompt, previous_tokens=previous_gen+output)
+            token = self.__llm.generate_single_token(
+                prompt_message=prompt, prev_tokens=prev_gen+output)
             if token == '':
                 return output
             output = output + token
