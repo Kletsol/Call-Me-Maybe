@@ -28,7 +28,7 @@ class Processor():
             prompt_output['name'] = function_name
 
             parameters = self.retrieve_params(prompt, function_name)
-            prompt_output['params'] = parameters
+            prompt_output['parameters'] = parameters
 
             output.append(prompt_output)
         return output

@@ -1,3 +1,4 @@
+from json import dumps
 from src import Model, Processor, parse_arguments, \
     get_function_def, get_prompts
 
@@ -14,6 +15,8 @@ def main() -> None:
         #         print(line)
         processor = Processor(prompts, functions, llm)
         output = processor.process_prompt()
+        with open("data/output/function_calling_results.json", "w") as file:
+            file.write(dumps(output, indent=4))
         for line in output:
             print(line)
     except KeyboardInterrupt:
