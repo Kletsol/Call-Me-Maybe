@@ -24,16 +24,16 @@ class Processor():
             prompt_output: dict[Any, Any] = {}
             prompt_output['prompt'] = prompt.PROMPT
 
-            function_name = self.function_name_generator(prompt)
+            function_name = self.retrieve_function_name(prompt)
             prompt_output['name'] = function_name
 
-            parameters = self.params_generator(prompt, function_name)
+            parameters = self.retrieve_params(prompt, function_name)
             prompt_output['params'] = parameters
 
             output.append(prompt_output)
         return output
 
-    def function_name_generator(self, prompt: ValidPrompt):
+    def retrieve_function_name(self, prompt: ValidPrompt):
         available_functions = self.get_functions()
         processus = ''
         while True:
@@ -52,7 +52,7 @@ class Processor():
                     available_functions = result
                     break
 
-    def params_generator(self, prompt: ValidPrompt,
+    def retrieve_params(self, prompt: ValidPrompt,
                          function: str) -> dict[Any, Any]:
         for funct_def in self.__functions:
             if funct_def.NAME == function:
@@ -65,12 +65,13 @@ class Processor():
                     '=' + str(output[arg]) + '\n'
             previous_gen = previous_gen + param + '='
             if definition.PARAMETERS[param]['type'] == 'number':
-                output[param] = self.nbr_param_generator(prompt, definition, previous_gen)
+                output[param] = self.get_nbr_param(prompt, definition, previous_gen)
             elif definition.PARAMETERS[param]['type'] == 'string':
-                output[param] = self.str_param_generator(prompt, definition, previous_gen)
+                output[param] = self.get_str_param(prompt, definition, previous_gen)
         return output
 
-    def nbr_param_generator(self, prompt_message: ValidPrompt, function: ValidFunction, previous_gen: str) -> int:
+    def get_nbr_param(self, prompt_message: ValidPrompt,
+                      function: ValidFunction, previous_gen: str) -> int:
         output = ''
         prompt = f"Here is the prompt you have to get params from: {prompt_message}. And here is the function applied on the prompt: {str(function)}"
         while True:
@@ -86,7 +87,6 @@ class Processor():
                         stop = True
                 if stop is True:
                     continue
-
                 output = output + token
                 if '\n' in output:
                     output = output.split('\n')[0]
@@ -99,7 +99,7 @@ class Processor():
                 break
 
 
-    def str_param_generator(self, prompt_message: ValidPrompt, function: ValidFunction, previous_gen: str):
+    def get_str_param(self, prompt_message: ValidPrompt, function: ValidFunction, previous_gen: str):
         output = ''
         # print(function)
         # prompt = f"{prompt_message}, {function.FULL_DEF}"
