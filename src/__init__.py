@@ -6,10 +6,12 @@ from src.parsing.prompts import ValidPrompt, get_prompts
 
 from src.objects.Model import Model
 from src.objects.Processor import Processor
+from src.objects.Visualizer import Visualizer
 
 __all__ = [Small_LLM_Model,
            Model,
            Processor,
+           Visualizer,
            ValidFunction,
            ValidPrompt,
            parse_arguments,
