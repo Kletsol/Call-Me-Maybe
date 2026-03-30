@@ -5,13 +5,14 @@ from src.parsing.functs import ValidFunction, get_function_def
 from src.parsing.prompts import ValidPrompt, get_prompts
 
 from src.objects.Model import Model
-from src.objects.Processor import Processor
 from src.objects.Visualizer import Visualizer
+from src.objects.Processor import Processor
+
 
 __all__ = [Small_LLM_Model,
            Model,
-           Processor,
            Visualizer,
+           Processor,
            ValidFunction,
            ValidPrompt,
            parse_arguments,
