@@ -1,5 +1,6 @@
 from src import ValidPrompt, Model, Visualizer
 from typing import Any
+import time
 
 from src.parsing.functs import ValidFunction
 # from time import sleep
@@ -23,6 +24,7 @@ class Processor():
 
     def process_prompt(self):
         output = []
+        self.visualizer.visualize()
         for prompt in self.__prompts:
             prompt_output: dict[Any, Any] = {}
             prompt_output['prompt'] = prompt.PROMPT
@@ -33,15 +35,16 @@ class Processor():
             parameters = self.retrieve_params(prompt, function_name)
             prompt_output['parameters'] = parameters
 
+            self.visualizer.visualize(function_name, parameters, ring=True)
+            time.sleep(4)
+            self.visualizer.visualize()
             output.append(prompt_output)
-            self.visualizer.visualize(prompt)
         return output
 
     def retrieve_function_name(self, prompt: ValidPrompt):
         available_functions = self.get_functions()
         processus = ''
         while True:
-            self.visualizer.visualize(prompt)
             output = "Here are the functions you can access to resolve the "\
                 f"prompt:{available_functions}. "\
                 f"And here is the prompt: {prompt.PROMPT}"
@@ -52,9 +55,6 @@ class Processor():
                     if function['name'].startswith(processus + token):
                         result.append(function)
                 if (len(result) == 1):
-                    if self.visualizer.active is True:
-                        self.visualizer.visualize(prompt, result[0], ring=True)
-                    # print("🤔 ...... \033[0;33mFound something !\033[0;0m💡")
                     return result[0]['name']
                 elif len(result) > 1 and token != '':
                     processus += token
