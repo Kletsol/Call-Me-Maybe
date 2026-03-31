@@ -35,7 +35,7 @@ class Processor():
             parameters = self.retrieve_params(prompt, function_name)
             prompt_output['parameters'] = parameters
 
-            self.visualizer.visualize(function_name, parameters, ring=True)
+            self.visualizer.visualize(prompt.PROMPT, function_name, parameters, ring=True)
             time.sleep(4)
             self.visualizer.visualize()
             output.append(prompt_output)

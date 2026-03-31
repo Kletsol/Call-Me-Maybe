@@ -1,3 +1,4 @@
+from operator import length_hint
 from typing import Optional, Any
 
 class Visualizer:
@@ -12,32 +13,62 @@ class Visualizer:
             spaces = spaces + " "
         return spaces
 
-    def visualize(self, function: Optional[str] = None, params: Optional[dict[Any, Any]] = None, result: str = '', ring: bool = False):
+    @staticmethod
+    def format_params(parameters: dict[Any, Any]) -> list:
+        output = ["    Got parameters:"]
+        for key, value in parameters.items():
+            output.append(f"    - {key}: {value}")
+        return output
+
+    @staticmethod
+    def format_prompt(prompt: str) -> list:
+        size = len(prompt)
+        output = ["    Processing prompt:"]
+        if size > 52:
+            start, end = prompt[:52], prompt[52:]
+            output.append(f"    - {start}")
+            output.append(f"      {end}")
+        else:
+            output.append(f"    - {prompt}")
+        return output
+
+    def visualize(self, prompt: Optional[str] = None, function: Optional[str]
+                  = None, params: Optional[dict[Any, Any]] = None,
+                  result: str = '', ring: bool = False) -> None:
         print("\033[H\033[J", end="")
+
         header = "\033[0;33m╔════════════════════════════════════════════════"\
-            "════════════════════════════════════════════════════╗\033[0;0m"
+            "══════════════════════════════════════════════════════╗\033[0;0m"
+
         footer = "\033[0;33m╚════════════════════════════════════════════════"\
-            "════════════════════════════════════════════════════╝\033[0;0m"
-        title = ["\033[1m   __  __                  __         __      _    __\033[22m",
-                 "\033[1m  /   /__\\ |   |     |\\/| |__   |\\/| /__\\ \\/ |_}  |__\033[22m",
-                 "\033[1m  \\__ |  | |__ |__   |  | |__   |  | |  | /  |__} |__\033[22m"]
+            "══════════════════════════════════════════════════════╝\033[0;0m"
+
+        title = ["     \033[1;35m__  __                  \033[1;33m__         \033[1;35m__      _    __\033[22m",
+                 "    \033[1;35m/   /__\\ |   |     \033[1;33m|\\/| |__   \033[1;35m|\\/| /__\\ \\/ |_}  |__\033[22m",
+                 "    \033[1;35m\\__ |  | |__ |__   \033[1;33m|  | |__   \033[1;35m|  | |  | /  |__} |__\033[22m"]
+        if prompt:
+            prompt_lines = self.format_prompt(prompt)
+
         name = ["    Catched a function name:",
                 f"    - {function}"]
-        parameters = ["    Got parameters:",
-                      f"    - {params}"]
-        space = self.get_spaces(60, 0)
+        if params:
+            parameters = self.format_params(params)
+
+        space = self.get_spaces(62, 0)
+
         print(header)
         count = 0
         for i in range(27):
             if ring is False:
-                if i < 9 or count > 16:
+                if i < 8 or count > 17:
                     print(
                         "\033[0;33m║                                         "
-                        "                                                "
+                        "                                                  "
                         "           ║\033[0;0m"
                     )
                 else:
                     middle = [
+                        "                                    ",
                         "   _.===========================._  ",
                         "  /.===========================._/\\ ",
                         " /      ___________________      \\/ ",
@@ -56,21 +87,21 @@ class Visualizer:
                         "     /______//_______\\\\______/ /    ",
                         "     [_______________________]/     ",
                     ]
-                    if i >= 12 and i <= 14:
-                        middle[count] = middle[count] + title[i - 12]
+                    if i >= 8 and i <= 10:
+                        middle[count] = middle[count] + title[i - 8]
                         space = "       "
                     print(
                         f"\033[0;33m║\033[0;0m    \033[0;34m{middle[count]}"
                         f"\033[0;0m{space}\033[0;33m║\033[0;0m"
                     )
-                    space = self.get_spaces(60, 0)
+                    space = self.get_spaces(62, 0)
                     count += 1
             else:
                 if count > 25:
                     print(
                         "\033[0;33m║                                         "
                         "                                                    "
-                        "       ║\033[0;0m"
+                        "         ║\033[0;0m"
                     )
                 else:
                     middle = [
@@ -101,27 +132,27 @@ class Visualizer:
                         "     /______//_______\\\\______/ /    ",
                         "     [_______________________]/     ",
                     ]
-                    if i >= 12 and i <= 14:
-                        middle[count] = middle[count] + title[i - 12]
+                    if i >= 8 and i <= 10:
+                        middle[count] = middle[count] + title[i - 8]
                         space = "       "
+
+                    if i >= 13 and i <= (12 + len(prompt_lines)):
+                        middle[count] = middle[count] + prompt_lines[i - 13]
+                        space = self.get_spaces(62, len(prompt_lines[i - 13]))
 
                     if i >= 17 and i <= 18:
                         middle[count] = middle[count] + name[i - 17]
-                        space = self.get_spaces(60, len(name[i - 17]))
+                        space = self.get_spaces(62, len(name[i - 17]))
 
-                    if i >= 21 and i <= 22:
-                        if i == 22 and len(parameters[1]) > 60:
-                            middle[count] = middle[count] + "      Too many parameters, we'll send you an e-mail"
-                            space = "         "
-                        else:
-                            middle[count] = middle[count] + parameters[i - 21]
-                            space = self.get_spaces(60, len(parameters[i - 21]))
+                    if i >= 20 and i <= (19 + len(parameters)):
+                        middle[count] = middle[count] + parameters[i - 20]
+                        space = self.get_spaces(62, len(parameters[i - 20]))
 
                     print(
                         f"\033[0;33m║\033[0;0m    \033[0;34m{middle[count]}"
                         f"\033[0;0m{space}\033[0;33m║\033[0;0m"
                     )
-                    space = self.get_spaces(60, 0)
+                    space = self.get_spaces(62, 0)
                     count += 1
             self.ring = False
         print(footer)
