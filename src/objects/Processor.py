@@ -6,7 +6,8 @@ from src.parsing.functs import ValidFunction
 
 
 class Processor():
-    def __init__(self, prompts: list, functions: list,
+    def __init__(self, prompts: list[ValidPrompt],
+                 functions: list[ValidFunction],
                  llm: Model, visualizer: Visualizer) -> None:
         self.__prompts = prompts
         self.__functions = functions
@@ -14,14 +15,14 @@ class Processor():
         self.visualizer = visualizer
         self.found = False
 
-    def get_functions(self):
+    def get_functions(self) -> list[dict[str, str]]:
         result = []
         for function in self.__functions:
             result.append({'name': function.NAME,
                            'description': function.DESCRIPTION})
         return result
 
-    def process_prompt(self):
+    def process_prompt(self) -> list[dict[Any, Any]]:
         output = []
         for prompt in self.__prompts:
             if self.visualizer.active is True:
@@ -43,7 +44,7 @@ class Processor():
             output.append(prompt_output)
         return output
 
-    def retrieve_function_name(self, prompt: ValidPrompt):
+    def retrieve_function_name(self, prompt: ValidPrompt) -> str:
         available_functions = self.get_functions()
         processus = ''
         while True:
@@ -57,7 +58,7 @@ class Processor():
                     if function['name'].startswith(processus + token):
                         result.append(function)
                 if (len(result) == 1):
-                    return result[0]['name']
+                    return str(result[0]['name'])
                 elif len(result) > 1 and token != '':
                     processus += token
                     available_functions = result
@@ -68,7 +69,7 @@ class Processor():
         for funct_def in self.__functions:
             if funct_def.NAME == function:
                 definition = funct_def
-        output: dict = {}
+        output: dict[Any, Any] = {}
         for param in definition.PARAMETERS:
             history = ''
             for arg in output.keys():
@@ -83,7 +84,7 @@ class Processor():
         return output
 
     def get_nbr_param(self, prompt_message: ValidPrompt,
-                      function: ValidFunction, history: str) -> int:
+                      function: ValidFunction, history: str) -> str:
         output = ''
         prompt = "Here is the prompt you have to get params from: "\
             f"{prompt_message}. "\
@@ -108,13 +109,13 @@ class Processor():
                     if output is None:
                         continue
                     try:
-                        return output
+                        return str(output)
                     except ValueError:
                         output = ''
                 break
 
     def get_str_param(self, prompt_message: ValidPrompt,
-                      function: ValidFunction, history: str):
+                      function: ValidFunction, history: str) -> str:
         output = ''
         prompt = "Here is the prompt you have to get params from: "\
             f"{prompt_message}. "\

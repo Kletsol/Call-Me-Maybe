@@ -9,12 +9,12 @@ from src.objects.Visualizer import Visualizer
 from src.objects.Processor import Processor
 
 
-__all__ = [Small_LLM_Model,
-           Model,
-           Visualizer,
-           Processor,
-           ValidFunction,
-           ValidPrompt,
-           parse_arguments,
-           get_function_def,
-           get_prompts]
+__all__ = ["Small_LLM_Model",
+           "Model",
+           "Visualizer",
+           "Processor",
+           "ValidFunction",
+           "ValidPrompt",
+           "parse_arguments",
+           "get_function_def",
+           "get_prompts"]

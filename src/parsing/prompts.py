@@ -10,7 +10,7 @@ class ValidPrompt(BaseModel):
     PROMPT: str
 
 
-def get_prompts(path: str) -> list:
+def get_prompts(path: str) -> list[ValidPrompt]:
     try:
         with open(path, "r") as file:
             data = json.load(file)

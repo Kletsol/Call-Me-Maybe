@@ -14,7 +14,7 @@ class ValidFunction(BaseModel):
     FULL_DEF: str
 
     @model_validator(mode="after")
-    def validate(self):
+    def validator(self) -> "ValidFunction":
         for key in self.PARAMETERS.keys():
             if "type" not in self.PARAMETERS[key].keys():
                 raise FunctionError(
@@ -25,7 +25,7 @@ class ValidFunction(BaseModel):
         return self
 
 
-def get_function_def(path: str) -> list:
+def get_function_def(path: str) -> list[ValidFunction]:
     try:
         with open(path, "r") as file:
             data = json.load(file)

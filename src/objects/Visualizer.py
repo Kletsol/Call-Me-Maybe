@@ -14,14 +14,14 @@ class Visualizer:
         return spaces
 
     @staticmethod
-    def format_params(parameters: dict[Any, Any]) -> list:
+    def format_params(parameters: dict[Any, Any]) -> list[str]:
         output = ["    Got parameters:"]
         for key, value in parameters.items():
             output.append(f"    - {key}: {value}")
         return output
 
     @staticmethod
-    def format_prompt(prompt: str) -> list:
+    def format_prompt(prompt: str) -> list[str]:
         size = len(prompt)
         if prompt == "Nothing left to process":
             output = [f"    {prompt}"]
@@ -35,7 +35,7 @@ class Visualizer:
             output.append(f"    - {prompt}")
         return output
 
-    def visualize(self, prompt: str = None, function: Optional[str]
+    def visualize(self, prompt: str = '', function: Optional[str]
                   = None, params: Optional[dict[Any, Any]] = None,
                   result: str = '', ring: bool = False) -> None:
         print("\033[H\033[J", end="")
@@ -52,7 +52,7 @@ class Visualizer:
                  "\033[1;35m|\\/| /__\\ \\/ |_}  |__\033[22m",
                  "    \033[1;35m\\__ |  | |__ |__   \033[1;33m|  | |__   "
                  "\033[1;35m|  | |  | /  |__} |__\033[22m"]
-        if prompt:
+        if prompt != '':
             prompt_lines = self.format_prompt(prompt)
 
         name = ["    Catched a function name:",
