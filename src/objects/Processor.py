@@ -24,7 +24,8 @@ class Processor():
     def process_prompt(self):
         output = []
         for prompt in self.__prompts:
-            self.visualizer.visualize(prompt=prompt.PROMPT)
+            if self.visualizer.active is True:
+                self.visualizer.visualize(prompt=prompt.PROMPT)
             prompt_output: dict[Any, Any] = {}
             prompt_output['prompt'] = prompt.PROMPT
 
@@ -34,10 +35,11 @@ class Processor():
             parameters = self.retrieve_params(prompt, function_name)
             prompt_output['parameters'] = parameters
 
-            self.visualizer.visualize(prompt.PROMPT, function_name,
-                                      parameters, ring=True)
-            time.sleep(4)
-            self.visualizer.visualize(prompt='Nothing left to process')
+            if self.visualizer.active is True:
+                self.visualizer.visualize(prompt.PROMPT, function_name,
+                                          parameters, ring=True)
+                time.sleep(4)
+                self.visualizer.visualize(prompt='Nothing left to process')
             output.append(prompt_output)
         return output
 

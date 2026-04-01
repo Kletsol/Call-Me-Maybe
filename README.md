@@ -43,7 +43,7 @@ Several resources were used to complete this project:
 
 - https://docs.python.org/fr/3/library/json.html and https://realpython.com/python-json/ to understand how json files are formatted, how to load, create and work with it to process all the data in input files and generate a 100% valid JSON file in output.
 
-- https://docs.python.org/fr/3/howto/argparse.html and https://docs.python.org/3/library/argparse.html as the library "argparse" was used in cunjunction with pydantic for the general parsing of the project.
+- https://docs.python.org/fr/3/howto/argparse.html and https://docs.python.org/3/library/argparse.html as the library argparse was used in conjunction with pydantic for the general parsing of the project.
 
 - https://www.datacamp.com/tutorial/python-uv to learn more about UV, the package manager I used both for the project himself and for its virtual environment management.
 
@@ -56,7 +56,24 @@ Several resources were used to complete this project:
 ### -> Performance analysis
 
 ### -> Challenges faced
+The main challenge in this project was, for me, to be able to get correct results in a time short enough to respect the subject's requisitions. My first tests were way too slow, and it took me a lot of time to figure out how I could reduce it. I finally got great results with a simple, yet not easy to find, manipulation:
+Until then, the prompt I was sending to the LLM only contained the original prompt and the list of available functions, like that :
 
+```python
+prompt = f"{available_functions},{prompt.PROMPT}"
+```
+As I said, this resulted in a very long processing time (almost 4 minutes 30 in total for 11 prompts)
+However, simply precising the prompt gave me massive improvements in terms of processing time:
+
+```python
+prompt = f"Here are the functions you can access to resolve the prompt:{available_functions}. And here is the prompt: {prompt.PROMPT}"
+```
+Does that seem logical to you? Well, to me, it didn't...
 ### -> Testing strategy
 
 ### -> Example usage
+To run the program, execute the following command in a terminal:
+```
+make run
+```
+    
