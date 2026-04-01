@@ -23,6 +23,9 @@ class Visualizer:
     @staticmethod
     def format_prompt(prompt: str) -> list:
         size = len(prompt)
+        if prompt == "Nothing left to process":
+            output = [f"    {prompt}"]
+            return output
         output = ["    Processing prompt:"]
         if size > 52:
             start, end = prompt[:52], prompt[52:]
@@ -32,7 +35,7 @@ class Visualizer:
             output.append(f"    - {prompt}")
         return output
 
-    def visualize(self, prompt: Optional[str] = None, function: Optional[str]
+    def visualize(self, prompt: str = None, function: Optional[str]
                   = None, params: Optional[dict[Any, Any]] = None,
                   result: str = '', ring: bool = False) -> None:
         print("\033[H\033[J", end="")
@@ -93,6 +96,9 @@ class Visualizer:
                     if i >= 8 and i <= 10:
                         middle[count] = middle[count] + title[i - 8]
                         space = "       "
+                    if i >= 13 and i <= (12 + len(prompt_lines)):
+                        middle[count] = middle[count] + prompt_lines[i - 13]
+                        space = self.get_spaces(62, len(prompt_lines[i - 13]))
                     print(
                         f"\033[0;33m║\033[0;0m    \033[0;34m{middle[count]}"
                         f"\033[0;0m{space}\033[0;33m║\033[0;0m"

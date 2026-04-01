@@ -3,7 +3,6 @@ from typing import Any
 import time
 
 from src.parsing.functs import ValidFunction
-# from time import sleep
 
 
 class Processor():
@@ -24,8 +23,8 @@ class Processor():
 
     def process_prompt(self):
         output = []
-        self.visualizer.visualize()
         for prompt in self.__prompts:
+            self.visualizer.visualize(prompt=prompt.PROMPT)
             prompt_output: dict[Any, Any] = {}
             prompt_output['prompt'] = prompt.PROMPT
 
@@ -38,7 +37,7 @@ class Processor():
             self.visualizer.visualize(prompt.PROMPT, function_name,
                                       parameters, ring=True)
             time.sleep(4)
-            self.visualizer.visualize()
+            self.visualizer.visualize(prompt='Nothing left to process')
             output.append(prompt_output)
         return output
 
