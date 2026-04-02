@@ -12,7 +12,7 @@ def main() -> None:
         visual = Visualizer(True)
         processor = Processor(prompts, functions, llm, visual)
         output = processor.process_prompt()
-        with open("data/output/function_calling_results.json", "w") as file:
+        with open(args.output, "w") as file:
             file.write(dumps(output, indent=4))
     except KeyboardInterrupt:
         print("\r\033[0;31mAborted - see you soon :D\033[0;0m")

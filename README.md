@@ -54,6 +54,11 @@ Several resources were used to complete this project:
 ### -> Design decisions
 
 ### -> Performance analysis
+The programs accuracy, speed and reliability depends, above all, on the LLM himself. However, I've been able to set up multiple processus to improve these performances:
+- Constrained decoding allowed me to sort the tokens to keep the most interesting of them, limiting possible errors for both accuracy and reliability,
+- Speed has been quite a challenge, more explications on this subject in the next section.
+
+Overall, my program achieves rather good results, being fast and precise enough to stay far below 5 minutes with correct results.
 
 ### -> Challenges faced
 The main challenge in this project was, for me, to be able to get correct results in a time short enough to respect the subject's requisitions. My first tests were way too slow, and it took me a lot of time to figure out how I could reduce it. I finally got great results with a simple, yet not easy to find, manipulation:
@@ -68,7 +73,7 @@ However, simply precising the prompt gave me massive improvements in terms of pr
 ```python
 prompt = f"Here are the functions you can access to resolve the prompt:{available_functions}. And here is the prompt: {prompt.PROMPT}"
 ```
-Does that seem logical to you? Well, to me, it didn't...
+Does that seem logical to you ?  Well, to me, it didn't...
 ### -> Testing strategy
 
 ### -> Example usage
@@ -76,4 +81,3 @@ To run the program, execute the following command in a terminal:
 ```
 make run
 ```
-    

@@ -12,7 +12,7 @@ run:
 
 debug:
 
-clean: rm -rf $(FILES_TO_DELETE)
+clean: rm -rf .mypy_cache
 
 lint:
 	uv run python -m flake8 src
