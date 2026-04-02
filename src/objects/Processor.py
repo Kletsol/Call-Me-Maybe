@@ -6,6 +6,9 @@ from src.parsing.functs import ValidFunction
 
 
 class Processor():
+    """The main class to process the prompt, retrieve correct
+    function and parameters and return it
+    """
     def __init__(self, prompts: list[ValidPrompt],
                  functions: list[ValidFunction],
                  llm: Model, visualizer: Visualizer) -> None:
@@ -16,6 +19,13 @@ class Processor():
         self.found = False
 
     def get_functions(self) -> list[dict[str, str]]:
+        """
+        Gets the existing functions and returns it as a list of dicts
+        each dict corresponding to a function
+
+        Returns:
+            list[dict[str, str]]: The list of functions
+        """
         result = []
         for function in self.__functions:
             result.append({'name': function.NAME,
@@ -23,6 +33,14 @@ class Processor():
         return result
 
     def process_prompt(self) -> list[dict[Any, Any]]:
+        """Processes each prompt in self.__prompts, looking for the
+        correponding function and parameters
+
+        Returns:
+            list[dict[Any, Any]]: A list containing, for each
+            processed prompt, the prompt itself, the function name
+            and the parameters
+        """
         output = []
         for prompt in self.__prompts:
             if self.visualizer.active is True:
@@ -45,6 +63,17 @@ class Processor():
         return output
 
     def retrieve_function_name(self, prompt: ValidPrompt) -> str:
+        """
+        Sends a prompt depending on the available functions and the
+        original prompt to the LLM, then uses constrained decoding to filter
+        and extract a valid function name
+
+        Args:
+            prompt (ValidPrompt): The original prompt
+
+        Returns:
+            str: The function's name
+        """
         available_functions = self.get_functions()
         processus = ''
         while True:
@@ -66,6 +95,17 @@ class Processor():
 
     def retrieve_params(self, prompt: ValidPrompt,
                         function: str) -> dict[Any, Any]:
+        """
+        Filters the expected paramaters by type, and calls the correct
+        function depending on it, then stores all the resulting parameters
+
+        Args:
+            prompt (ValidPrompt): The original prompt
+            function (str): The previously catched function name
+
+        Returns:
+            dict[Any, Any]: A dict containing the parameters
+        """
         for funct_def in self.__functions:
             if funct_def.NAME == function:
                 definition = funct_def
@@ -83,15 +123,28 @@ class Processor():
                                                    history)
         return output
 
-    def get_nbr_param(self, prompt_message: ValidPrompt,
+    def get_nbr_param(self, prompt: ValidPrompt,
                       function: ValidFunction, history: str) -> str:
+        """
+        Sends a prompt depending on the original prompt and the
+        function previously catched to the LLM, then uses constrained decoding
+        to filter and extract a valid int parameter
+
+        Args:
+            prompt (ValidPrompt): The original prompt
+            function (ValidFunction): The function previously catched
+            history (str): The previously processed parameters
+
+        Returns:
+            str: The integer in the form of a string
+        """
         output = ''
-        prompt = "Here is the prompt you have to get params from: "\
-            f"{prompt_message}. "\
+        prompt_to_process = "Here is the prompt you have to get params from: "\
+            f"{prompt}. "\
             f"And here is the function applied on the prompt: {str(function)}"
         while True:
             for token in self.__llm.generate_tokens(
-                    prompt=prompt, history=history+output):
+                    prompt=prompt_to_process, history=history+output):
                 if token == '':
                     try:
                         return output
@@ -116,6 +169,19 @@ class Processor():
 
     def get_str_param(self, prompt_message: ValidPrompt,
                       function: ValidFunction, history: str) -> str:
+        """
+        Sends a prompt depending on the original prompt and the
+        function previously catched to the LLM, then uses constrained decoding
+        to filter and extract a string, being the expected parameter
+
+        Args:
+            prompt (ValidPrompt): The original prompt
+            function (ValidFunction): The function previously catched
+            history (str): The previously processed parameters
+
+        Returns:
+            str: The valid parameter
+        """
         output = ''
         prompt = "Here is the prompt you have to get params from: "\
             f"{prompt_message}. "\

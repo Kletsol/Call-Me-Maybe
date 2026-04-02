@@ -2,6 +2,12 @@ from argparse import ArgumentParser, Namespace
 
 
 def parse_arguments() -> Namespace:
+    """
+    Parses arguments given at execution using argparse
+
+    Returns:
+        Namespace: the parsed arguments
+    """
     parser = ArgumentParser(exit_on_error=False)
     parser.add_argument("--functions_definition",
                         help="functions_definition file path",
@@ -22,6 +28,10 @@ def parse_arguments() -> Namespace:
     parser.add_argument("--device",
                         help="computation device",
                         default=None,
+                        required=False)
+    parser.add_argument("--visualize",
+                        help="activate visualizer",
+                        action="store_true",
                         required=False)
     parsed = parser.parse_args()
     return parsed

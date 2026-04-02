@@ -3,14 +3,31 @@ from pydantic import BaseModel
 
 
 class PromptError(Exception):
+    """A custom error type for more clarity"""
     pass
 
 
 class ValidPrompt(BaseModel):
+    """A custom verification class working with pydantic
+    to ensure each prompt is valid"""
     PROMPT: str
 
 
 def get_prompts(path: str) -> list[ValidPrompt]:
+    """
+    Opens the file containing the prompts to process, verify its validity
+    as well as the validity of the prompts themselves using ValidPrompt
+
+    Args:
+        path (str): the path to the prompts' file
+
+    Raises:
+        PromptError: No prompt found in file / Permission denied / invalid json
+        FileNotFoundError: Given path leads nowhere
+
+    Returns:
+        list[ValidPrompt]: The list of extracted prompts
+    """
     try:
         with open(path, "r") as file:
             data = json.load(file)

@@ -50,6 +50,13 @@ Several resources were used to complete this project:
 ## 🚀 Additional sections
 
 ### -> Algorithm explanation
+The algorithm I chose is quite simple: The program receives a list of prompt, processes each one of them independently by sending, successively, to the LLM:
+    - A prompt to retrieve the function's name
+    - A prompt to retrieve the function's parameters
+Each of these steps is encoded, converted to numercial IDs, processed by the LLM and its result is sorted by probability, before constrained decoding filters what is a good output and what isn't.
+For the function name, we get the most probable generated logit and compare it 
+
+All the results are then stored in a dictionary, ready to be written in the output file.
 
 ### -> Design decisions
 
@@ -81,3 +88,14 @@ To run the program, execute the following command in a terminal:
 ```
 make run
 ```
+You also can run the program with your own source files:
+```
+uv run python3 -m src --flags
+```
+The following flags are allowed:
+|Flag|Action|Usage
+|---|---|---|
+|--functions_definition|Change the path to the functions definitions file|uv run python3 -m src --functions_definition path_to_file|
+|--input|Change the path to the prompts file|uv run python3 -m src --input path_to_file|
+|--output|Change the path to the output file|uv run python3 -m src --output path_to_file|
+|--visual|Makes the visualizer active|uv run python3 -m src --visual|

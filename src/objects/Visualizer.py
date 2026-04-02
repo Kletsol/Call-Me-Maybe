@@ -2,11 +2,33 @@ from typing import Optional, Any
 
 
 class Visualizer:
+    """
+    A class whose role is to generate the graphical rendering of the project
+    """
     def __init__(self, active: bool):
+        """
+        Initiates class-internal parameters
+
+        Args:
+            active (bool): set to True if you want to visualize the
+            project, False otherwise
+        """
         self.active = active
 
     @staticmethod
     def get_spaces(total: int, value: int) -> str:
+        """
+        Calculates the number of spaces needed depending on a
+        total length and a value to substract to it. Used in visualize()
+        to get the correct amount of spaces after a variable
+
+        Args:
+            total (int): The base number of spaces
+            value (int): The length of the variable
+
+        Returns:
+            str: a string containing the calculated amount of spaces
+        """
         spaces: str = ''
         difference = total - value
         for i in range(difference):
@@ -15,6 +37,15 @@ class Visualizer:
 
     @staticmethod
     def format_params(parameters: dict[Any, Any]) -> list[str]:
+        """
+        Formats the given parameters as a list of strings
+
+        Args:
+            parameters (dict[Any, Any]): The parameters to format
+
+        Returns:
+            list[str]: The formatted parameters
+        """
         output = ["    Got parameters:"]
         for key, value in parameters.items():
             output.append(f"    - {key}: {value}")
@@ -22,6 +53,15 @@ class Visualizer:
 
     @staticmethod
     def format_prompt(prompt: str) -> list[str]:
+        """
+        Formats the given prompt as a list of strings
+
+        Args:
+            prompt (str): The prompt to format
+
+        Returns:
+            list[str]: The formatted prompt
+        """
         size = len(prompt)
         if prompt == "Nothing left to process":
             output = [f"    {prompt}"]
@@ -37,7 +77,19 @@ class Visualizer:
 
     def visualize(self, prompt: str = '', function: Optional[str]
                   = None, params: Optional[dict[Any, Any]] = None,
-                  result: str = '', ring: bool = False) -> None:
+                  ring: bool = False) -> None:
+        """
+        Manages the graphical render of the project over time.
+
+        Args:
+            prompt (str, optional): The prompt to display. Defaults to ''.
+            function (Optional[str], optional): The function to display.
+            Defaults to None.
+            params (Optional[dict[Any, Any]], optional): The parameters to
+            display. Defaults to None.
+            ring (bool, optional): True if the phone must ring, Fase otherwise.
+            Defaults to False.
+        """
         print("\033[H\033[J", end="")
 
         header = "\033[0;33m╔════════════════════════════[Created with waaaay"\

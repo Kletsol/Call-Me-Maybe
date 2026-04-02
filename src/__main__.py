@@ -9,21 +9,24 @@ def main() -> None:
     except Exception as e:
         print(f"\033[0;31m[ERROR]: {e}\033[0;0m")
         return
+
     try:
         functions = get_function_def(args.functions_definition)
     except Exception as e:
         print(f"\033[0;31m[ERROR]: field {e} missing in "
               "function definition\033[0;0m")
         return
+
     try:
         prompts = get_prompts(args.input)
     except Exception as e:
         print(f"\033[0;31m[ERROR]: field {e} missing in "
               "prompt definition\033[0;0m")
         return
+
     try:
         llm = Model(model_name=args.model, device=args.device)
-        visual = Visualizer(True)
+        visual = Visualizer(args.visualize)
         processor = Processor(prompts, functions, llm, visual)
         output = processor.process_prompt()
         with open(args.output, "w") as file:
