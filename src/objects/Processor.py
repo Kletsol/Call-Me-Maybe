@@ -124,7 +124,7 @@ class Processor():
         return output
 
     def get_nbr_param(self, prompt: ValidPrompt,
-                      function: ValidFunction, history: str) -> str:
+                      function: ValidFunction, history: str) -> float:
         """
         Sends a prompt depending on the original prompt and the
         function previously catched to the LLM, then uses constrained decoding
@@ -147,7 +147,7 @@ class Processor():
                     prompt=prompt_to_process, history=history+output):
                 if token == '':
                     try:
-                        return output
+                        return float(output)
                     except ValueError:
                         output = ''
                 stop = False
@@ -162,12 +162,12 @@ class Processor():
                     if output is None:
                         continue
                     try:
-                        return str(output)
+                        return float(output)
                     except ValueError:
                         output = ''
                 break
 
-    def get_str_param(self, prompt_message: ValidPrompt,
+    def get_str_param(self, prompt: ValidPrompt,
                       function: ValidFunction, history: str) -> str:
         """
         Sends a prompt depending on the original prompt and the
@@ -183,17 +183,19 @@ class Processor():
             str: The valid parameter
         """
         output = ''
-        prompt = "Here is the prompt you have to get params from: "\
-            f"{prompt_message}. "\
+        prompt_to_process = "Here is the prompt you have to get params from: "\
+            f"{prompt}. "\
             "And here is the function applied on the prompt: "\
             f"{function.FULL_DEF}. Keep it simple and concise."
 
         while "\n" not in output:
             token = self.__llm.generate_single_token(
-                prompt=prompt, history=history+output)
+                prompt=prompt_to_process, history=history+output)
             if token == '':
                 return output
             output = output + token
+            if output not in prompt.PROMPT and output.lower() in prompt.PROMPT:
+                output = output.lower()
             if '\n' in output:
-                return output.split('\n')[0].rstrip(' ')
+                return output.split('\n')[0].rstrip(' ').strip('.*')
         return output
