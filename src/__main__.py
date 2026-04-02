@@ -6,8 +6,22 @@ from src import Model, Processor, Visualizer, parse_arguments, \
 def main() -> None:
     try:
         args = parse_arguments()
+    except Exception as e:
+        print(f"\033[0;31m[ERROR]: {e}\033[0;0m")
+        return
+    try:
         functions = get_function_def(args.functions_definition)
+    except Exception as e:
+        print(f"\033[0;31m[ERROR]: field {e} missing in "
+              "function definition\033[0;0m")
+        return
+    try:
         prompts = get_prompts(args.input)
+    except Exception as e:
+        print(f"\033[0;31m[ERROR]: field {e} missing in "
+              "prompt definition\033[0;0m")
+        return
+    try:
         llm = Model(model_name=args.model, device=args.device)
         visual = Visualizer(True)
         processor = Processor(prompts, functions, llm, visual)
@@ -17,7 +31,7 @@ def main() -> None:
     except KeyboardInterrupt:
         print("\r\033[0;31mAborted - see you soon :D\033[0;0m")
     except Exception as e:
-        print(e)
+        print(f"[ERROR]\033[0;31m{e}\033[0;0m")
 
 
 main()

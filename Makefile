@@ -8,11 +8,12 @@ sync:
 	uv sync
 
 run:
-	uv run python3 -m src --input $(INPUT) --output $(OUTPUT)
+	uv run python3 -m src
 
 debug:
 
-clean: rm -rf .mypy_cache
+clean:
+	rm -rf .mypy_cache
 
 lint:
 	uv run python -m flake8 src

@@ -2,7 +2,7 @@ from argparse import ArgumentParser, Namespace
 
 
 def parse_arguments() -> Namespace:
-    parser = ArgumentParser()
+    parser = ArgumentParser(exit_on_error=False)
     parser.add_argument("--functions_definition",
                         help="functions_definition file path",
                         default="data/input/functions_definition.json",
