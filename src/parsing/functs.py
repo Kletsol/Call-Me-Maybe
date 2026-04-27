@@ -1,4 +1,5 @@
 import json
+from typing import Any
 from pydantic import BaseModel, model_validator
 
 
@@ -36,6 +37,15 @@ class ValidFunction(BaseModel):
         return self
 
 
+def duplicate_key(pairs: ((list[tuple[Any, Any]]))) -> Any:
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise FunctionError(f"[ERROR]: duplicate key '{key}' in function")
+        result[key] = value
+    return result
+
+
 def get_function_def(path: str) -> list[ValidFunction]:
     """Opens the file containing the functions definitions, verify its validity
     as well as the validity of the definitions themselves using ValidFunction
@@ -52,11 +62,15 @@ def get_function_def(path: str) -> list[ValidFunction]:
     """
     try:
         with open(path, "r") as file:
-            data = json.load(file)
+            data = json.load(file, object_pairs_hook=duplicate_key)
         if len(data) == 0:
             raise FunctionError("[ERROR]: No data in function definition file")
         function_defs = []
         for function in data:
+            for key in function.keys():
+                if key not in ['name', 'description', 'parameters', 'returns']:
+                    raise FunctionError(f"[ERROR]: Invalid field '{key}' "
+                                        "in function definition")
             function_defs.append(
                 ValidFunction(
                     NAME=function["name"],
