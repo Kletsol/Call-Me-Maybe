@@ -1,3 +1,4 @@
+from pydantic import BaseModel, ConfigDict
 from src import ValidPrompt, Model, Visualizer
 from typing import Any
 import time
@@ -5,13 +6,23 @@ import time
 from src.parsing.functs import ValidFunction
 
 
-class Processor():
+class Processor(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     """The main class to process the prompt, retrieve correct
     function and parameters and return it
     """
+    prompts: list[ValidPrompt]
+    functions: list[ValidFunction]
+    llm: Model
+    visualizer: Visualizer
+    found: bool = False
+
     def __init__(self, prompts: list[ValidPrompt],
                  functions: list[ValidFunction],
                  llm: Model, visualizer: Visualizer) -> None:
+        super().__init__(prompts=prompts,
+                         functions=functions,
+                         llm=llm, visualizer=visualizer,)
         self.__prompts = prompts
         self.__functions = functions
         self.__llm = llm

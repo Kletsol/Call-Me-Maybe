@@ -61,8 +61,10 @@ def main() -> None:
 
     try:
         llm = Model(model_name=args.model, device=args.device)
-        visual = Visualizer(args.visualize)
-        processor = Processor(prompts, functions, llm, visual)
+        visual = Visualizer(active=args.visualize, ring=False)
+        processor = Processor(prompts=prompts,
+                              functions=functions,
+                              llm=llm, visualizer=visual)
         raw_output = processor.process_prompt()
         output = format_output(raw_output)
         if args.output == args.input or \

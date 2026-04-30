@@ -1,11 +1,16 @@
+from pydantic import BaseModel
 from typing import Optional, Any
 
 
-class Visualizer:
+class Visualizer(BaseModel):
     """
     A class whose role is to generate the graphical rendering of the project
     """
-    def __init__(self, active: bool):
+    active: bool
+    ring: bool
+
+    def __init__(self, active: bool, ring: bool):
+        super().__init__(active=active, ring=ring)
         """
         Initiates class-internal parameters
 
@@ -14,6 +19,7 @@ class Visualizer:
             project, False otherwise
         """
         self.active = active
+        self.ring = ring
 
     @staticmethod
     def get_spaces(total: int, value: int) -> str:
